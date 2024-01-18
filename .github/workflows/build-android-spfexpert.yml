@@ -26,21 +26,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'yarn'
+          cache: 'npm'
 
-      - name: Run Yarn Install
-        run: |
-          npm i -g corepack
-          yarn install
+      # - name: Run Yarn Install
+      #   run: |
+      #     npm i -g corepack
+      #     yarn install
 
-      - name: Build application
-        run: |
-          cd android
-          ./gradlew assembleRelease
+      # - name: Build application
+      #   run: |
+      #     cd android
+      #     ./gradlew assembleRelease
 
-      - name: Upload application
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: android/app/build/outputs/apk/release/app-release.apk
-          retention-days: 3
+      # - name: Upload application
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: app
+      #     path: android/app/build/outputs/apk/release/app-release.apk
+      #     retention-days: 3
