@@ -33,10 +33,11 @@ jobs:
           npm i -g corepack
           npm install
 
-      - name: Build application
-        run: |
-          cd android
-          ./gradlew assembleRelease
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Upload application
         uses: actions/upload-artifact@v2
