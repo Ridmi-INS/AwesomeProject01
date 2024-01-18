@@ -30,7 +30,6 @@ jobs:
 
       - name: Run npm Install
         run: |
-          cd ./packages/app-mobile/
           npm i -g corepack
           npm install
       - name: Build application
