@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_62c8cc86-3149-45e3-b5e4-8f0f6004d5eb
+    types: pipeline_6413a535-dfc4-4ea9-97a0-0ab47f6b165b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -24,7 +24,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 714b6942-435b-4f55-9e3a-831f932c7712'
+      - name: 'Run :: Decoding Secrets 9d1b58e5-80a9-43a3-858b-e3138eccfdb3'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
