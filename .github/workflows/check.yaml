@@ -1,59 +1,46 @@
-name: Build Mobile App (Skyu Generated)
-'on':
+name: 'Build Android app'
+
+on:
   push:
     branches:
       - main
-  workflow_dispatch: {}
-  repository_dispatch:
-    types: pipeline_0a210587-d6ca-4560-9abd-f76e1d4eb7b0
-env:
-  ENCODED_PIPELINE_SECRET: >-
-    ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
-  MOBILE_APP_DEPENDENCY_ENV: NODE
-  MOBILE_APP_BUILD_ENV: JAVA
-  MOBILE_APP_BUILD_ENV_VERSION: '17'
-  MOBILE_APP_DEPENDENCY_ENV_VERSION: '18'
-  MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/apk/release/app-release.apk
+
 jobs:
   build:
-    name: Build
-    permissions: write-all
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
-      - name: Start
-        run: >-
-          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
-          $GITHUB_ENV
-      - name: 'Run :: Checkout repository'
+      - name: Checkout repository
         uses: actions/checkout@v2
-      - name: 'Run :: Checkout Specific Commit'
-        if: ${{ github.event.client_payload.commitId != null }}
-        run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 620cf4c5-6f83-4023-9f2e-464f2d735e5e'
-        run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
-          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+
       - name: Install Java
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
+          java-version: 17
           distribution: adopt
           cache: gradle
+
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.MOBILE_APP_DEPENDENCY_ENV_VERSION }}
-          cache: npm
+          node-version: '18'
+          cache: 'npm'
+
       - name: Run Yarn Install
-        run: npm i -g corepack && npm install
+        run: |
+          npm i -g corepack
+          npm install
+
       - name: Build application
-        run: cd ./android && ./gradlew assembleRelease
+        run: |
+          cd ./android
+          ./gradlew assembleRelease
+
       - name: Upload application
         uses: actions/upload-artifact@v2
         with:
           name: app
-          path: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
-          retention-days: '3'
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 3
