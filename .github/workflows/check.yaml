@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_540e32d9-a100-4923-a9f0-6c995e4165b3
+    types: pipeline_6bcb5527-5c44-4772-afbe-99b27153f370
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -29,28 +29,23 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 35324edc-f61d-4f8f-bcc3-486275df760f'
+      - name: 'Run :: Decoding Secrets bfe155db-81b5-4655-9a9b-75ac52fb7a5b'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - &ref_0
-        name: Validate Gradle wrapper
+      - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - &ref_1
-        name: Setup Node
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.MOBILE_APP_DEPENDENCY_ENV_VERSION }}
           cache: npm
-      - &ref_2
-        name: Run Yarn Install
+      - name: Run Yarn Install
         run: npm i -g corepack && npm install
-      - &ref_3
-        name: Build application
+      - name: Build application
         run: cd ./android && ./gradlew assembleRelease
-      - &ref_4
-        name: Upload application
+      - name: Upload application
         uses: actions/upload-artifact@v2
         with:
           name: app
@@ -62,8 +57,3 @@ jobs:
           java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
           distribution: adopt
           cache: gradle
-      - *ref_0
-      - *ref_1
-      - *ref_2
-      - *ref_3
-      - *ref_4
