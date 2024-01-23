@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_de4de79a-6a3d-4c23-8d7c-728aa882179b
+    types: pipeline_911bb771-d044-4008-ac50-d61f4024f6c6
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -14,6 +14,7 @@ env:
   MOBILE_APP_BUILD_ENV_VERSION: '17'
   MOBILE_APP_DEPENDENCY_ENV_VERSION: '18'
   MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/apk/release/app-release.apk
+  MOBILE_APP_DEPENDENCY_INSTALLATION: npm i -g yarn && YARN
 jobs:
   build:
     name: Build
@@ -29,7 +30,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets dee12a7b-3475-4dc5-b3d7-c872781d87ac'
+      - name: 'Run :: Decoding Secrets 6d666b38-8739-491c-8faa-aa79143c31c1'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -48,10 +49,10 @@ jobs:
           node-version: ${{ env.MOBILE_APP_DEPENDENCY_ENV_VERSION }}
           cache: npm
       - name: Run Yarn Install
-        run: npm i -g corepack && npm install
+        run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
       - name: Build application
         run: cd ./android && ./gradlew assembleRelease
-      - name: Upload application
+      - name: Build and Upload application
         uses: actions/upload-artifact@v2
         with:
           name: app
