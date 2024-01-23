@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7d46850b-d5e1-461d-a16b-9d0dfe29ba5d
+    types: pipeline_021e4aba-bc10-4161-b03a-61ed080deea2
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -29,7 +29,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 09b2b7c9-7de1-4008-94d6-2e13a5ac22c4'
+      - name: 'Run :: Decoding Secrets 95074b4a-e27f-44e6-9135-fff817530014'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -42,11 +42,10 @@ jobs:
           cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: 'Run :: Set up Node.js'
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.MOBILE_APP_DEPENDENCY_ENV_VERSION }}
-          cache: npm
+          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
       - name: Install Dependencies
         run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
       - name: Build application
