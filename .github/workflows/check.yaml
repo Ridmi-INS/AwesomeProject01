@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6bcb5527-5c44-4772-afbe-99b27153f370
+    types: pipeline_0a210587-d6ca-4560-9abd-f76e1d4eb7b0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -29,11 +29,17 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets bfe155db-81b5-4655-9a9b-75ac52fb7a5b'
+      - name: 'Run :: Decoding Secrets 620cf4c5-6f83-4023-9f2e-464f2d735e5e'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
+          distribution: adopt
+          cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Setup Node
@@ -51,9 +57,3 @@ jobs:
           name: app
           path: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
           retention-days: '3'
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
-          distribution: adopt
-          cache: gradle
