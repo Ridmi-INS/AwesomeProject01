@@ -45,7 +45,7 @@
 name: 'Build Android app'
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
@@ -88,3 +88,11 @@ jobs:
           name: app
           path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 3
+          
+      - name: Upload application to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+            serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+            packageName: com.example-app
+            releaseFiles: android/app/build/outputs/apk/release/app-release.apk
+            track: internal
