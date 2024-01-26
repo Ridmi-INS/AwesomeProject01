@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1737470a-70d4-4de5-8e89-2d300e8ea210
+    types: pipeline_77c08ab6-25fa-4f55-b5c7-c0ae0b13a3b4
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -29,7 +29,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets a962132f-ab0f-4ada-a08a-d2f841f83338'
+      - name: 'Run :: Decoding Secrets 81da97e7-9568-432f-9cf3-79c957c178a8'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -50,7 +50,7 @@ jobs:
         run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
       - name: 'Run :: Build application'
         run: cd ${{ env.ANDROID_APP_FOLDER_PATH }} && ./gradlew assembleRelease
-      - name: 'Run :: Build and Upload application'
+      - name: 'Run :: Build and Upload artifact'
         uses: actions/upload-artifact@v2
         with:
           name: app
