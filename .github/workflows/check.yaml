@@ -5,15 +5,12 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_77c08ab6-25fa-4f55-b5c7-c0ae0b13a3b4
+    types: pipeline_b4c35cd0-a87d-4d83-b7d9-33c4fd705c6f
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
-  MOBILE_APP_BUILD_ENV_VERSION: '17'
-  BUILD_ENVIRONEMENT_VERSION: '18'
-  MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/apk/release/app-release.apk
-  MOBILE_APP_DEPENDENCY_INSTALLATION: npm i -g corepack && npm i
-  ANDROID_APP_FOLDER_PATH: android
+  PLAYSTORE_APP_NAME: my-app
+  PLAYSTORE_DESTINATION: internal
 jobs:
   build:
     name: Build
@@ -29,30 +26,10 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 81da97e7-9568-432f-9cf3-79c957c178a8'
+      - name: 'Run :: Decoding Secrets e088e336-f011-4874-aafa-6202e0b5b710'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Install Java'
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
-          distribution: adopt
-          cache: gradle
-      - name: 'Run :: Validate Gradle wrapper'
-        uses: gradle/wrapper-validation-action@v1
-      - name: 'Run :: Set up Node.js'
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
-      - name: 'Run :: Install Dependencies'
-        run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
-      - name: 'Run :: Build application'
-        run: cd ${{ env.ANDROID_APP_FOLDER_PATH }} && ./gradlew assembleRelease
-      - name: 'Run :: Build and Upload artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
-          retention-days: '3'
+      - name: 'Run :: Upload Application to Playstore'
+        run: echo checking ...
