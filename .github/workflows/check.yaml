@@ -1,0 +1,40 @@
+name: Build Mobile App (Skyu Generated)
+'on':
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_f19e30ce-ba94-4472-95c5-b9c9ffc90aea
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
+  PLAYSTORE_APP_NAME: my-app
+  PLAYSTORE_DESTINATION: internal
+jobs:
+  build:
+    name: Build
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start
+        run: >-
+          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
+          $GITHUB_ENV
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v2
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: git checkout ${{ github.event.client_payload.commitId }}
+      - name: 'Run :: Decoding Secrets e2386a85-e11a-4b8d-a6b2-fe625ec72e0a'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - name: 'Run :: Upload Application to Playstore'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ env.SERVICE_ACCOUNT_JSON }}
+          packageName: com.${{ env.PLAYSTORE_APP_NAME }}
+          releaseFiles: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
+          track: ${{ env.PLAYSTORE_DESTINATION }}
