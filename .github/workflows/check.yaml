@@ -1,6 +1,6 @@
 name: Build Mobile App (Skyu Generated)
 'on':
-  push:
+  pull_request:
     branches:
       - main
   workflow_dispatch: {}
