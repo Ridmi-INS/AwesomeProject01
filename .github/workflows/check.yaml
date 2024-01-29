@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_94ec0624-9e50-4776-9619-23491f65bba2
+    types: pipeline_4793f281-12fe-44a0-871e-60486ee204f0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -22,7 +22,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets ced7febf-d031-476f-aeec-ab1cdfe16ec7'
+      - name: 'Run :: Decoding Secrets 92346bad-c0b9-4b88-bb08-e08255950f24'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
