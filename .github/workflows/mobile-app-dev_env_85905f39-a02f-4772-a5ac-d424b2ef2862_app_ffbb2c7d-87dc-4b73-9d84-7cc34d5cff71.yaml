@@ -1,0 +1,65 @@
+name: >-
+  mobile-app-dev_env_85905f39-a02f-4772-a5ac-d424b2ef2862_app_ffbb2c7d-87dc-4b73-9d84-7cc34d5cff71
+  Pipeline (Skyu Generated)
+'on':
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_55b4fca8-7257-4e5d-87a7-8344ba9519a0
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_MOBILEAPPDEV_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71}}
+  MOBILE_APP_BUILD_ENV_VERSION: '17'
+  BUILD_ENVIRONEMENT_VERSION: '18'
+  MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/bundle/release/app-release.aab
+  MOBILE_APP_DEPENDENCY_INSTALLATION: npm i -g corepack && npm i
+  ANDROID_APP_FOLDER_PATH: android
+  PLAYSTORE_APP_NAME: ridmi98.lastcheck
+  PLAYSTORE_DESTINATION: internal
+jobs:
+  build-and-upload-to-playstore:
+    name: Build And Upload To Playstore
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets 413cd10d-a40f-478f-937e-e1796cceb379'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Install Java'
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
+          distribution: adopt
+          cache: gradle
+      - name: 'Run :: Validate Gradle wrapper'
+        uses: gradle/wrapper-validation-action@v1
+      - name: 'Run :: Set up Node.js'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
+      - name: 'Run :: Install Dependencies'
+        run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
+      - name: 'Run :: Build Application'
+        run: cd ${{ env.ANDROID_APP_FOLDER_PATH }} && ./gradlew bundleRelease
+      - name: 'Run :: Build and Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
+          retention-days: '3'
+      - name: 'Run :: Upload Application to Playstore'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ env.SERVICE_ACCOUNT_JSON }}
+          packageName: com.${{ env.PLAYSTORE_APP_NAME }}
+          releaseFiles: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
+          track: ${{ env.PLAYSTORE_DESTINATION }}
