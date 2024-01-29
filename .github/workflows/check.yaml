@@ -5,13 +5,13 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b7bb1a08-fc37-4b5b-93ba-e1032fad13bb
+    types: pipeline_30096c15-5f88-41ea-a624-2c62f32790ee
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
   MOBILE_APP_BUILD_ENV_VERSION: '17'
   BUILD_ENVIRONEMENT_VERSION: '18'
-  MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/apk/release/app-release.aab
+  MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/bundle/release/app-release.aab
   MOBILE_APP_DEPENDENCY_INSTALLATION: npm i -g corepack && npm i
   ANDROID_APP_FOLDER_PATH: android
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 6490d07e-67f7-474f-9d99-272c0434331c'
+      - name: 'Run :: Decoding Secrets 5179675a-888c-4c4c-87a3-fffc26c97f8a'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
