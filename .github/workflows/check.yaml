@@ -1,63 +1,54 @@
-name: Build Mobile App (Skyu Generated)
-'on':
+name: "Build Android Production app"
+
+on:
   push:
     branches:
       - main
-  workflow_dispatch: {}
-  repository_dispatch:
-    types: pipeline_8a70f9a4-fe75-45f6-a79a-0ed38ef984d0
-env:
-  ENCODED_PIPELINE_SECRET: >-
-    ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
-  MOBILE_APP_BUILD_ENV_VERSION: '17'
-  BUILD_ENVIRONEMENT_VERSION: '18'
-  MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/bundle/release/app-release.aab
-  MOBILE_APP_DEPENDENCY_INSTALLATION: npm i -g corepack && npm i
-  ANDROID_APP_FOLDER_PATH: android
-  PLAYSTORE_APP_NAME: ridmi98.lastcheck
-  PLAYSTORE_DESTINATION: internal
+
 jobs:
   build:
-    name: Build
-    permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets a9b92fb6-14a7-4bf1-a108-9970e65d1e50'
-        run: |2-
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-                  if [ ! -x "$(command -v jq)" ]; then
-                    echo "jq not found, installing..."
-                    sudo apt-get update
-                    sudo apt-get install -y jq
-                  fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
-      - name: 'Run :: Install Java'
+      - name: Install Java
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.MOBILE_APP_BUILD_ENV_VERSION }}
+          java-version: 17
           distribution: adopt
           cache: gradle
-      - name: 'Run :: Validate Gradle wrapper'
+
+      - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - name: 'Run :: Set up Node.js'
-        uses: actions/setup-node@v4
+
+      - name: Setup Node  
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
-      - name: 'Run :: Install Dependencies'
-        run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
-      - name: 'Run :: Build Application'
-        run: cd ./android && ./gradlew bundleRelease
-      - name: 'Run :: Build and Upload Artifact'
+          node-version: '18'
+          cache: 'yarn'
+
+      - name: Run Yarn Install
+        run: |
+             npm i -g corepack
+             npm install
+
+      - name: Build application
+        run: |
+             cd android
+             ./gradlew bundleRelease
+
+      - name: Upload application
         uses: actions/upload-artifact@v2
         with:
           name: app
-          path: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
-          retention-days: '3'
-      - name: 'Run :: Upload Application to Playstore'
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 3
+
+      - name: Upload application to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ env.SERVICE_ACCOUNT_JSON }}
-          packageName: com.${{ env.PLAYSTORE_APP_NAME }}
-          releaseFiles: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
-          track: ${{ env.PLAYSTORE_DESTINATION }}
+            serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+            packageName: com.ridmi98.lastcheck
+            releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+            track: internal
