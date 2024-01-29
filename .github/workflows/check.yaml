@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e55620a7-2b4b-4690-8472-304afdff5973
+    types: pipeline_94ec0624-9e50-4776-9619-23491f65bba2
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -14,7 +14,7 @@ env:
   MOBILE_APP_ARTIFACT_PATH: android/app/build/outputs/bundle/release/app-release.aab
   MOBILE_APP_DEPENDENCY_INSTALLATION: npm i -g corepack && npm i
   ANDROID_APP_FOLDER_PATH: android
-  PLAYSTORE_APP_NAME: my-app
+  PLAYSTORE_APP_NAME: ridmi98.lastcheck
   PLAYSTORE_DESTINATION: internal
 jobs:
   build:
@@ -22,20 +22,16 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: Start
-        run: >-
-          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
-          $GITHUB_ENV
-      - name: 'Run :: Checkout repository'
-        uses: actions/checkout@v2
-      - name: 'Run :: Checkout Specific Commit'
-        if: ${{ github.event.client_payload.commitId != null }}
-        run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets ef5eaed7-7dd9-480e-98db-f58c2153e082'
-        run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
-          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - name: 'Run :: Decoding Secrets ced7febf-d031-476f-aeec-ab1cdfe16ec7'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Install Java'
         uses: actions/setup-java@v3
         with:
@@ -62,6 +58,6 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ env.SERVICE_ACCOUNT_JSON }}
-          packageName: com.ridmi98.lastcheck
+          packageName: com.${{ env.PLAYSTORE_APP_NAME }}
           releaseFiles: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
           track: ${{ env.PLAYSTORE_DESTINATION }}
