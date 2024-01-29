@@ -7,7 +7,7 @@ name: >-
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_2d61e57f-0ed1-4fee-886f-373c8edf7fd7
+    types: pipeline_b0f4632d-7e6d-4546-9741-d5d7010192ef
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_MOBILEAPPDEV_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71}}
@@ -33,7 +33,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 8b418c3c-34b0-4973-8f86-6a10ffe2614a'
+      - name: 'Run :: Decoding Secrets a3ccea03-f800-4ddd-9345-a16c2c8a5c69'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -60,16 +60,6 @@ jobs:
           name: app
           path: ${{ env.MOBILE_APP_ARTIFACT_PATH }}
           retention-days: '3'
-  deploy-to-playstore:
-    name: Deploy To Playstore
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Run :: Decoding Secrets 6a5ace74-6acf-44bf-836e-859e35b537e8'
-        run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
-          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: 'Run :: Upload Application to Playstore'
         uses: r0adkll/upload-google-play@v1
         with:
