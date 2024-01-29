@@ -5,7 +5,7 @@ name: Build Mobile App (Skyu Generated)
       - main
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4793f281-12fe-44a0-871e-60486ee204f0
+    types: pipeline_8a70f9a4-fe75-45f6-a79a-0ed38ef984d0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.AWESOMEPROJECT01_ENV_85905F39A02F4772A5ACD424B2EF2862_APP_FFBB2C7D87DC4B739D847CC34D5CFF71_CHECK}}
@@ -22,7 +22,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 92346bad-c0b9-4b88-bb08-e08255950f24'
+      - name: 'Run :: Decoding Secrets a9b92fb6-14a7-4bf1-a108-9970e65d1e50'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -47,7 +47,7 @@ jobs:
       - name: 'Run :: Install Dependencies'
         run: ${{ env.MOBILE_APP_DEPENDENCY_INSTALLATION }}
       - name: 'Run :: Build Application'
-        run: cd ${{ env.ANDROID_APP_FOLDER_PATH }} && ./gradlew bundleRelease
+        run: cd ./android && ./gradlew bundleRelease
       - name: 'Run :: Build and Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
