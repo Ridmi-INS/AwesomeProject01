@@ -1,0 +1,22 @@
+name: Deployment-Main  # DevLake checks this name
+
+on:
+  push:
+    branches:
+      - main  # DevLake checks this branch name
+
+jobs:
+  production-deploy-job:  # DevLake checks this job name
+    runs-on: ubuntu-latest
+    # DevLake checks this environment name
+    environment: production 
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment
+        run: |
+          echo "🚀 Starting Production Deployment..."
+          echo "This matches the 'Production Deployment' criteria in DevLake."
+          echo "✅ Done."
