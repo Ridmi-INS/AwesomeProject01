@@ -1,0 +1,22 @@
+name: Deployment-Main  # DevLake checks this name
+
+on:
+  push:
+    branches:
+      - main  # DevLake checks this branch name
+
+jobs:
+  staging-deploy-job:  # DevLake checks this job name
+    runs-on: ubuntu-latest
+    # DevLake checks this environment name
+    environment: staging 
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment
+        run: |
+          echo "🚀 Starting Staging Deployment..."
+          echo "This matches the 'Staging Deployment' criteria in DevLake."
+          echo "✅ Done."
